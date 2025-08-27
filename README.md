@@ -14,7 +14,8 @@ Each game is self-contained and can be played independently, making it easy to e
 - Responsive design for desktop and mobile.
 - Currently includes:
   - **Tic Tac Toe**
-  - *(More games coming soon)*
+  - **Snake Game**
+  - (More Games Coming Soon!)
 
 ---
 
