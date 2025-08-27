@@ -1,12 +1,12 @@
-const board = document.getElementById("board");
-const cells = document.querySelectorAll(".cell");
-const message = document.getElementById("message");
-const resetBtn = document.getElementById("reset");
+var board = document.getElementById("board");
+var cells = document.querySelectorAll(".cell");
+var message = document.getElementById("message");
+var resetBtn = document.getElementById("reset");
 
-let currentPlayer = "X";
-let gameState = ["", "", "", "", "", "", "", "", ""];
+var currentPlayer = "X";
+var gameState = ["", "", "", "", "", "", "", "", ""];
 
-const winningCombinations = [
+var winningCombinations = [
     [0, 1, 2],
     [3, 4, 5],
     [6, 7, 8],
@@ -14,50 +14,60 @@ const winningCombinations = [
     [1, 4, 7],
     [2, 5, 8],
     [0, 4, 8],
-    [2, 4, 6],
+    [2, 4, 6]
 ];
 
 function checkWinner() {
-    for (let combo of winningCombinations) {
-        const [a, b, c] = combo;
-        if (
-            gameState[a] &&
-            gameState[a] === gameState[b] &&
-            gameState[a] === gameState[c]
-        ) {
-            message.textContent = `Player ${currentPlayer} wins!`;
+    for (var i = 0; i < winningCombinations.length; i++) {
+        var combo = winningCombinations[i];
+        var a = combo[0], b = combo[1], c = combo[2];
+        if (gameState[a] && gameState[a] === gameState[b] && gameState[a] === gameState[c]) {
+            message.textContent = "Player " + currentPlayer + " wins!";
+            combo.forEach(function (index) {
+                cells[index].classList.add("winner");
+            });
+            board.classList.add("disabled");
             return true;
         }
     }
-    if (!gameState.includes("")) {
+    if (gameState.indexOf("") === -1) {
         message.textContent = "It's a tie!";
+        board.classList.add("disabled");
         return true;
     }
     return false;
 }
 
-function handleClick(e) {
-    const index = e.target.dataset.index;
-    if (gameState[index] !== "" || message.textContent.includes("wins") || message.textContent.includes("tie")) return;
+function handleClick(event) {
+    var index = event.target.dataset.index;
+    if (gameState[index] !== "" || board.classList.contains("disabled")) return;
 
     gameState[index] = currentPlayer;
-    e.target.textContent = currentPlayer;
+    event.target.textContent = currentPlayer;
+    event.target.classList.add(currentPlayer);
 
     if (!checkWinner()) {
         currentPlayer = currentPlayer === "X" ? "O" : "X";
-        message.textContent = `Player ${currentPlayer}'s turn`;
+        message.textContent = "Player " + currentPlayer + "'s turn";
     }
 }
 
 function resetGame() {
-    gameState.fill("");
-    cells.forEach(cell => (cell.textContent = ""));
+    gameState = ["", "", "", "", "", "", "", "", ""];
+    for (var i = 0; i < cells.length; i++) {
+        cells[i].textContent = "";
+        cells[i].classList.remove("X", "O", "winner");
+    }
     currentPlayer = "X";
-    message.textContent = `Player ${currentPlayer}'s turn`;
+    message.textContent = "Player " + currentPlayer + "'s turn";
+    board.classList.remove("disabled");
 }
 
-cells.forEach(cell => cell.addEventListener("click", handleClick));
+for (var i = 0; i < cells.length; i++) {
+    cells[i].addEventListener("click", handleClick);
+}
+
 resetBtn.addEventListener("click", resetGame);
 
-// Initialize message
-message.textContent = `Player ${currentPlayer}'s turn`;
+// Initialize
+message.textContent = "Player " + currentPlayer + "'s turn";
